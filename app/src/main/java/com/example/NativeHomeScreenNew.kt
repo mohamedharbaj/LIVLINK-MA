@@ -1473,7 +1473,8 @@ fun NativeHomeScreenNew(
                                 ownerId = uid
                             )
                             CloudRepo.publish(newOffer) { ok ->
-                                if (!ok) Toast.makeText(context, "تعذر نشر الإعلان. عاود المحاولة.", Toast.LENGTH_LONG).show()
+                                if (ok) Toast.makeText(context, "تم نشر إعلانك ($city)", Toast.LENGTH_LONG).show()
+                                else Toast.makeText(context, "تعذر نشر الإعلان. تأكد من الأنترنيت وتوقيت الهاتف وعاود المحاولة.", Toast.LENGTH_LONG).show()
                             }
 
                             if (selectedCity != "جميع مدن المغرب" && selectedCity != city) {
@@ -1481,7 +1482,6 @@ fun NativeHomeScreenNew(
                                 selectedDistrict = "اختر الحي"
                             }
 
-                            Toast.makeText(context, "تم نشر إعلانك ($city)", Toast.LENGTH_LONG).show()
                             currentTab = 1
                         }
                     )
@@ -1935,7 +1935,7 @@ fun AddScreen(
 
                     OutlinedTextField(
                         value = titleText,
-                        onValueChange = { titleText = it },
+                        onValueChange = { titleText = it.take(120) },
                         label = {
                             Text(
                                 if (selectedType == "عرض توصيل") "الاسم - نوع المركبة (مثال: يوسف - دراجة نارية) *" else "اسم المحل ونوع السلع *",
@@ -1979,7 +1979,7 @@ fun AddScreen(
 
                     OutlinedTextField(
                         value = detailsText,
-                        onValueChange = { detailsText = it },
+                        onValueChange = { detailsText = it.take(600) },
                         label = { Text("تفاصيل إضافية (الأحياء، شروط التوصيل، التوقيت)", color = subTextColor) },
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedTextColor = textColor,
@@ -2073,7 +2073,24 @@ fun AddScreen(
                         }
                     }
 
-                    Spacer(modifier = Modifier.height(10.dp))
+                    Spacer(modifier = Modifier.height(6.dp))
+
+                    // شروط الاستخدام: موافقة ضمنية عند النشر (مطلوب من Google Play للمحتوى الذي ينشره المستخدمون)
+                    TextButton(
+                        onClick = {
+                            runCatching {
+                                context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://livlink-ma.pages.dev/terms.html")))
+                            }
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(
+                            "بالضغط على نشر، أنت توافق على شروط الاستخدام (اضغط للاطلاع)",
+                            color = subTextColor,
+                            fontSize = 11.5.sp,
+                            textAlign = TextAlign.Center
+                        )
+                    }
 
                     Button(
                         onClick = {
@@ -2137,7 +2154,7 @@ fun AddScreen(
             text = {
                 OutlinedTextField(
                     value = manualAddressText,
-                    onValueChange = { manualAddressText = it },
+                    onValueChange = { manualAddressText = it.take(300) },
                     label = { Text("مثال: شارع محمد الخامس، المعاريف، الدار البيضاء", color = subTextColor) },
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedTextColor = textColor,
@@ -2837,6 +2854,13 @@ fun ProfileTabContent(
                     }
                 }) {
                     Text("سياسة الخصوصية", color = subTextColor, fontWeight = FontWeight.Bold, fontSize = 12.5.sp)
+                }
+                TextButton(onClick = {
+                    runCatching {
+                        privacyCtx.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://livlink-ma.pages.dev/terms.html")))
+                    }
+                }) {
+                    Text("شروط الاستخدام", color = subTextColor, fontWeight = FontWeight.Bold, fontSize = 12.5.sp)
                 }
 
                 // خط فاصل بألوان المنصة (أزرق ← برتقالي)
