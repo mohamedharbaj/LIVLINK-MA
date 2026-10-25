@@ -7,7 +7,8 @@ const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
 admin.initializeApp({ credential: admin.credential.cert(serviceAccount) });
 const db = admin.firestore();
 
-const REPORT_THRESHOLD = 3;
+// 5 بلاغات من 5 حسابات مختلفة (رفعناها من 3 لتصعيب التلاعب بحسابات وهمية)
+const REPORT_THRESHOLD = 5;
 const REPORT_TTL_MS = 30 * 24 * 60 * 60 * 1000;
 
 async function deleteExpiredAds() {
