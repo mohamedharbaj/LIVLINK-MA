@@ -42,7 +42,7 @@ object CloudRepo {
         val base = db.collection(ADS)
         val query: Query =
             if (city == "جميع مدن المغرب") base.orderBy("createdAt", Query.Direction.DESCENDING).limit(MAX_RESULTS)
-            else base.whereEqualTo("city", city).limit(MAX_RESULTS)
+            else base.whereEqualTo("city", city).orderBy("createdAt", Query.Direction.DESCENDING).limit(MAX_RESULTS)
 
         return query.addSnapshotListener { snap, err ->
             if (err != null) {
