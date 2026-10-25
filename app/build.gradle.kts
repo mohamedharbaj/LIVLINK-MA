@@ -102,6 +102,8 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth)
     implementation(libs.firebase.firestore)
+    // App Check: يحمي Firestore من السكريبتات والحسابات الوهمية (التفعيل الإجباري من Firebase Console)
+    implementation(libs.firebase.appcheck.playintegrity)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
