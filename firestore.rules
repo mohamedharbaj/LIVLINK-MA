@@ -48,6 +48,9 @@ service cloud.firestore {
         && request.resource.data.reporterId == request.auth.uid
         && request.resource.data.adId is string
         && request.resource.data.adId.size() <= 40
+        // الإعلان خاصو يكون موجود، وما تقدرش تبلغ على إعلانك
+        && exists(/databases/$(database)/documents/ads/$(request.resource.data.adId))
+        && get(/databases/$(database)/documents/ads/$(request.resource.data.adId)).data.ownerId != request.auth.uid
         && reportId == request.resource.data.adId + '_' + request.auth.uid
         && request.resource.data.reason in ['spam', 'scam', 'wrong', 'other']
         && request.resource.data.createdAt is number;
